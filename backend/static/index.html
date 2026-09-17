@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Productivity Agent — AIONOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 2px solid #0284c7; color: #0284c7; font-weight: 600; }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+  <!-- TOP APP HEADER -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-3">
+          <div class="bg-gradient-to-tr from-sky-600 to-indigo-600 text-white p-2 rounded-xl shadow-md">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-lg text-slate-900 tracking-tight">AIONOS</span>
+              <span class="text-xs bg-sky-100 text-sky-800 font-semibold px-2 py-0.5 rounded-full">Executive Agent</span>
+            </div>
+            <p class="text-xs text-slate-500">Autonomous Action Extraction & Grounded Intelligence</p>
+          </div>
+        </div>
+
+        <!-- USER & DATE CONTEXT -->
+        <div class="flex items-center space-x-4">
+          <div class="hidden md:flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 text-xs">
+            <i data-lucide="calendar" class="w-4 h-4 text-slate-600"></i>
+            <span class="font-medium text-slate-700">Simulated Date:</span>
+            <span id="header-date" class="font-bold text-sky-700">Wednesday, 23 Sep 2026</span>
+          </div>
+
+          <div class="flex items-center space-x-3 pl-3 border-l border-slate-200">
+            <div class="w-9 h-9 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm shadow">
+              AM
+            </div>
+            <div class="hidden sm:block text-left">
+              <div class="text-sm font-bold text-slate-900 leading-tight">Arjun Malhotra</div>
+              <div class="text-xs text-slate-500">VP Sales • Veridian Corp</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN NAVIGATION TABS -->
+      <nav class="flex space-x-6 overflow-x-auto scrollbar-thin text-sm border-t border-slate-100">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn py-3 px-1 text-slate-600 hover:text-sky-600 flex items-center space-x-2 tab-active">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <span>Dashboard</span>
+        </button>
+        <button onclick="switchTab('my-actions')" id="nav-my-actions" class="tab-btn py-3 px-1 text-slate-600 hover:text-sky-600 flex items-center space-x-2">
+          <i data-lucide="check-square" class="w-4 h-4"></i>
+          <span>My Actions</span>
+          <span id="badge-my-actions" class="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-red-100 text-red-700 font-bold">2</span>
+        </button>
+        <button onclick="switchTab('waiting')" id="nav-waiting" class="tab-btn py-3 px-1 text-slate-600 hover:text-sky-600 flex items-center space-x-2">
+          <i data-lucide="clock" class="w-4 h-4"></i>
+          <span>Waiting On Others</span>
+          <span id="badge-waiting" class="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-amber-100 text-amber-700 font-bold">1</span>
+        </button>
+        <button onclick="switchTab('unclear')" id="nav-unclear" class="tab-btn py-3 px-1 text-slate-600 hover:text-sky-600 flex items-center space-x-2">
+          <i data-lucide="help-circle" class="w-4 h-4 text-amber-500"></i>
+          <span>Unclear Ownership</span>
+          <span id="badge-unclear" class="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-amber-200 text-amber-900 font-bold">1</span>
+        </button>
+        <button onclick="switchTab('calendar')" id="nav-calendar" class="tab-btn py-3 px-1 text-slate-600 hover:text-sky-600 flex items-center space-x-2">
+          <i data-lucide="calendar-days" class="w-4 h-4"></i>
+          <span>Calendar & Conflicts</span>
+        </button>
+        <button onclick="switchTab('sources')" id="nav-sources" class="tab-btn py-3 px-1 text-slate-600 hover:text-sky-600 flex items-center space-x-2">
+          <i data-lucide="folder-search" class="w-4 h-4"></i>
+          <span>Sources Explorer</span>
+        </button>
+        <button onclick="switchTab('qa')" id="nav-qa" class="tab-btn py-3 px-1 text-indigo-600 hover:text-indigo-800 flex items-center space-x-2 font-semibold">
+          <i data-lucide="message-square-code" class="w-4 h-4"></i>
+          <span>Ask Agent (Q&A)</span>
+        </button>
+        <button onclick="switchTab('architecture')" id="nav-architecture" class="tab-btn py-3 px-1 text-slate-500 hover:text-slate-800 flex items-center space-x-2">
+          <i data-lucide="git-branch" class="w-4 h-4"></i>
+          <span>Architecture</span>
+        </button>
+        <button onclick="switchTab('assumptions')" id="nav-assumptions" class="tab-btn py-3 px-1 text-slate-500 hover:text-slate-800 flex items-center space-x-2">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span>Assumptions</span>
+        </button>
+        <button onclick="switchTab('ai-tools')" id="nav-ai-tools" class="tab-btn py-3 px-1 text-slate-500 hover:text-slate-800 flex items-center space-x-2">
+          <i data-lucide="cpu" class="w-4 h-4"></i>
+          <span>AI Tools</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- 1. DASHBOARD VIEW -->
+    <div id="view-dashboard" class="space-y-6">
+      <div class="bg-gradient-to-r from-slate-900 via-sky-950 to-indigo-950 text-white rounded-2xl p-6 shadow-lg relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <span class="text-xs font-semibold tracking-wider uppercase text-sky-400">Daily Executive Brief</span>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Good Morning, Arjun</h1>
+            <p class="text-sm text-slate-300 max-w-3xl mt-2 leading-relaxed">
+              Wednesday, 23 September 2026. Immediate attention: The updated vendor list promised to Raghav remains un-sent and is overdue past morning review. Rescheduled Meridian Logistics sync confirmed at 3:00 PM today. Divya delivered the Q3 Expense Variance Report (Completed). Critical compliance item: Mumbai office lease renewal remains unassigned.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2 shrink-0">
+            <button onclick="switchTab('qa')" class="bg-sky-500 hover:bg-sky-400 text-white font-semibold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 transition shadow">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span>Ask Agent (Demo Q&A)</span>
+            </button>
+            <button onclick="retriggerPipeline()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 transition">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span>Re-run Pipeline</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI METRIC CARDS -->
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div onclick="switchTab('my-actions')" class="cursor-pointer bg-white p-4 rounded-xl border border-slate-200 hover:border-sky-400 transition shadow-sm hover:shadow">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold text-slate-500 uppercase">My Actions</span>
+            <span class="p-1.5 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="check-circle-2" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-slate-900 mt-2" id="kpi-my-actions">2</div>
+          <p class="text-xs text-slate-500 mt-1">Personal owner</p>
+        </div>
+
+        <div onclick="switchTab('waiting')" class="cursor-pointer bg-white p-4 rounded-xl border border-slate-200 hover:border-amber-400 transition shadow-sm hover:shadow">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold text-slate-500 uppercase">Waiting On Others</span>
+            <span class="p-1.5 bg-amber-50 text-amber-600 rounded-lg"><i data-lucide="clock" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-amber-600 mt-2" id="kpi-waiting">1</div>
+          <p class="text-xs text-slate-500 mt-1">Pending deliverables</p>
+        </div>
+
+        <div onclick="switchTab('my-actions')" class="cursor-pointer bg-white p-4 rounded-xl border border-red-200 bg-red-50/20 hover:border-red-400 transition shadow-sm hover:shadow">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold text-red-600 uppercase">Overdue / At Risk</span>
+            <span class="p-1.5 bg-red-100 text-red-700 rounded-lg"><i data-lucide="alert-triangle" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-red-600 mt-2" id="kpi-overdue">1</div>
+          <p class="text-xs text-red-500 mt-1">Vendor list not sent</p>
+        </div>
+
+        <div onclick="switchTab('unclear')" class="cursor-pointer bg-white p-4 rounded-xl border border-amber-300 bg-amber-50/30 hover:border-amber-500 transition shadow-sm hover:shadow">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold text-amber-800 uppercase">Unclear Ownership</span>
+            <span class="p-1.5 bg-amber-100 text-amber-800 rounded-lg"><i data-lucide="help-circle" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-amber-800 mt-2" id="kpi-unclear">1</div>
+          <p class="text-xs text-amber-700 mt-1">Mumbai lease renewal</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold text-emerald-600 uppercase">Completed</span>
+            <span class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="check-check" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-emerald-600 mt-2" id="kpi-completed">1</div>
+          <p class="text-xs text-emerald-600 mt-1">Expense report received</p>
+        </div>
+      </div>
+
+      <!-- MAIN DASHBOARD CONTENT GRID -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <span class="flex h-3 w-3 relative">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                </span>
+                <h2 class="font-bold text-base text-slate-900">🔴 Needs Action Today (Wednesday, 23 Sep)</h2>
+              </div>
+              <span class="text-xs text-slate-500 font-medium">Prioritized by Latest Evidence</span>
+            </div>
+            <div id="dashboard-today-actions" class="divide-y divide-slate-100 mt-2"></div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="shield-alert" class="w-5 h-5 text-amber-500"></i>
+                <h2 class="font-bold text-base text-slate-900">📌 Key Executive Risks & Conflicts</h2>
+              </div>
+              <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">Auto-detected</span>
+            </div>
+            <div class="grid gap-3 mt-4" id="dashboard-key-risks"></div>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="calendar" class="w-5 h-5 text-sky-600"></i>
+                <h2 class="font-bold text-base text-slate-900">📅 Today's Calendar</h2>
+              </div>
+              <span class="text-xs text-slate-500 font-medium">Wed, 23 Sep</span>
+            </div>
+            <div class="space-y-3 mt-4" id="dashboard-calendar"></div>
+          </div>
+
+          <div class="bg-amber-50 rounded-xl border border-amber-200 p-4">
+            <div class="flex items-start space-x-3">
+              <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+              <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-amber-900">⚠️ Calendar Conflict Alert</h3>
+                <p class="text-xs text-amber-800 font-semibold mt-1">Thursday, 24 Sep: 30-Minute Overlap</p>
+                <p class="text-xs text-amber-700 mt-1">
+                  • 09:00 - 10:00: Board Prep Session<br />
+                  • 09:30 - 10:30: Q3 Campaign Deck Review (Neha)
+                </p>
+                <div class="mt-2 text-xs font-medium text-amber-900 bg-amber-100/80 p-2 rounded border border-amber-200">
+                  Recommendation: Shift Campaign Deck Review to Thursday 10:30 AM.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. MY ACTIONS VIEW -->
+    <div id="view-my-actions" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">My Actions — Arjun Malhotra</h2>
+          <p class="text-xs text-slate-500">Actions where Arjun is the explicit personal owner. Distinct from other stakeholders' commitments.</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs text-slate-500 font-medium">Filter:</span>
+          <select id="filter-my-actions" onchange="renderMyActionsTable()" class="text-xs bg-slate-50 border border-slate-300 rounded-lg p-2">
+            <option value="ALL">All Statuses</option>
+            <option value="OVERDUE">Overdue / At Risk</option>
+            <option value="DUE_TODAY">Due Today</option>
+            <option value="UPCOMING">Upcoming</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Action</th>
+                <th class="py-3 px-4">Stakeholder</th>
+                <th class="py-3 px-4">Deadline</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4">Cross-Source</th>
+                <th class="py-3 px-4 text-right">Evidence & Audit</th>
+              </tr>
+            </thead>
+            <tbody id="my-actions-tbody" class="divide-y divide-slate-100 text-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. WAITING ON OTHERS VIEW -->
+    <div id="view-waiting" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">Waiting On Others</h2>
+        <p class="text-xs text-slate-500 mt-1">
+          Deliverables owned by other stakeholders that Arjun is tracking. Updated in real-time based on the latest explicit information.
+        </p>
+      </div>
+      <div class="grid gap-4" id="waiting-cards-container"></div>
+    </div>
+
+    <!-- 4. UNCLEAR OWNERSHIP VIEW -->
+    <div id="view-unclear" class="hidden space-y-6">
+      <div class="bg-amber-50 border-2 border-amber-300 rounded-xl p-6 shadow-sm">
+        <div class="flex items-start space-x-4">
+          <div class="p-3 bg-amber-200 text-amber-900 rounded-xl">
+            <i data-lucide="alert-octagon" class="w-8 h-8"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded">Compliance Alert</span>
+            <h2 class="text-2xl font-bold text-amber-950 mt-1">⚠️ UNCLEAR OWNERSHIP: Mumbai Office Lease Renewal</h2>
+            <p class="text-sm text-amber-900 mt-2 font-medium">
+              "Ownership is unclear. No owner has been confirmed in the source data."
+            </p>
+            <p class="text-xs text-amber-800 mt-1 leading-relaxed">
+              Strict Hallucination Rule 1 Applied: Never invent or guess an owner. Despite Arjun being in the email loop, neither Arjun nor any other colleague has accepted responsibility.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+        <h3 class="font-bold text-base text-slate-900">Documented Evidence Trail (Verbatim Sources)</h3>
+        <div class="border-l-2 border-amber-400 pl-4 space-y-4 text-xs">
+          <div>
+            <span class="font-bold text-slate-800">Monday, 21 Sep 2026, 1:00 PM • Facilities Team Email</span>
+            <p class="text-slate-600 italic bg-slate-50 p-2.5 rounded border border-slate-200 mt-1">
+              "Notice: The Mumbai Office lease renewal agreement signature is required by Friday, 25 September 2026, 5:00 PM IST (end of day) to avoid lapse and escalation penalties."
+            </p>
+          </div>
+          <div>
+            <span class="font-bold text-slate-800">Tuesday, 22 Sep 2026, 10:30 AM • Raghav Sethi (Ops Manager)</span>
+            <p class="text-slate-600 italic bg-slate-50 p-2.5 rounded border border-slate-200 mt-1">
+              "Looping in Arjun & Divya. Who has authority and is signing this renewal?"
+            </p>
+          </div>
+          <div>
+            <span class="font-bold text-slate-800">Tuesday, 22 Sep 2026, 2:00 PM • Divya Rao (Finance)</span>
+            <p class="text-slate-600 italic bg-slate-50 p-2.5 rounded border border-slate-200 mt-1">
+              "Facilities normally coordinates real estate lease execution and authorized signatory. It is not on Finance's plate."
+            </p>
+          </div>
+          <div>
+            <span class="font-bold text-slate-800">Wednesday, 23 Sep 2026, 11:00 AM • Raghav Sethi (Latest Follow-up)</span>
+            <p class="text-slate-600 italic bg-slate-50 p-2.5 rounded border border-slate-200 mt-1">
+              "Facilities team: please clarify owner immediately. As of today, this agreement remains unassigned and unowned."
+            </p>
+          </div>
+        </div>
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-slate-500">Deadline: <strong>Friday, 25 September 2026, 5:00 PM IST</strong></span>
+          <span class="bg-amber-100 text-amber-900 font-bold px-3 py-1 rounded-full">Owner Status: Unclear (Unassigned)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. CALENDAR VIEW -->
+    <div id="view-calendar" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">Arjun's Calendar — Week of 21–25 September 2026</h2>
+        <p class="text-xs text-slate-500 mt-1">Surfaces schedule overlaps without modifying events silently.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="full-week-calendar"></div>
+    </div>
+
+    <!-- 6. SOURCES VIEW -->
+    <div id="view-sources" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">Multi-Modal Sources Explorer</h2>
+        <p class="text-xs text-slate-500 mt-1">Inspect canonical assignment documents.</p>
+      </div>
+      <div class="space-y-6" id="raw-sources-container"></div>
+    </div>
+
+    <!-- 7. ASK AGENT (Q&A) VIEW -->
+    <div id="view-qa" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center space-x-3">
+          <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl">
+            <i data-lucide="bot" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Natural Language Q&A Agent</h2>
+            <p class="text-xs text-slate-500">Grounded strictly in source data with verbatim citations.</p>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-100">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">1-Click Test Scenarios (Assignment Benchmarks):</span>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button onclick="askPreset('What did I promise Raghav?')" class="text-xs bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 font-medium px-3 py-1.5 rounded-lg border border-slate-200 transition">
+              🎯 Test 1: What did I promise Raghav?
+            </button>
+            <button onclick="askPreset('What needs action today?')" class="text-xs bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 font-medium px-3 py-1.5 rounded-lg border border-slate-200 transition">
+              🎯 Test 2: What needs action today?
+            </button>
+            <button onclick="askPreset('Who owns the Mumbai lease?')" class="text-xs bg-amber-50 hover:bg-amber-100 hover:text-amber-900 text-amber-800 font-medium px-3 py-1.5 rounded-lg border border-amber-200 transition">
+              🎯 Test 3: Who owns Mumbai lease?
+            </button>
+            <button onclick="askPreset('Is the expense report still pending?')" class="text-xs bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 font-medium px-3 py-1.5 rounded-lg border border-slate-200 transition">
+              🎯 Test 4: Is expense report pending?
+            </button>
+            <button onclick="askPreset('When is the campaign deck review?')" class="text-xs bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 font-medium px-3 py-1.5 rounded-lg border border-slate-200 transition">
+              🎯 Test 5: When is campaign deck review?
+            </button>
+            <button onclick="askPreset('What happened to the Meridian call?')" class="text-xs bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 font-medium px-3 py-1.5 rounded-lg border border-slate-200 transition">
+              🎯 Test 6: What happened to Meridian call?
+            </button>
+            <button onclick="askPreset('Show duplicate commitments.')" class="text-xs bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-900 text-indigo-800 font-medium px-3 py-1.5 rounded-lg border border-indigo-200 transition">
+              🎯 Test 7: Show duplicate commitments
+            </button>
+            <button onclick="askPreset('What is the company budget for 2028?')" class="text-xs bg-rose-50 hover:bg-rose-100 hover:text-rose-900 text-rose-800 font-medium px-3 py-1.5 rounded-lg border border-rose-200 transition">
+              🛡️ Rule 7: Fallback Test
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-[500px]">
+        <div id="chat-messages" class="flex-1 p-5 overflow-y-auto space-y-4 scrollbar-thin">
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow">
+              <i data-lucide="bot" class="w-4 h-4"></i>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl rounded-tl-none max-w-2xl text-xs space-y-2">
+              <p class="font-semibold text-slate-800">Hello Arjun,</p>
+              <p class="text-slate-600 leading-relaxed">
+                I am your grounded productivity assistant. You can ask me about your personal commitments, items you are waiting on, upcoming deadlines, or ownership clarification. Click any preset test chip above or type your question below.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50/50 rounded-b-xl">
+          <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+            <input
+              id="chat-input"
+              type="text"
+              placeholder="Ask about your commitments..."
+              class="flex-1 bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"
+            />
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-2 transition shadow">
+              <span>Ask</span>
+              <i data-lucide="send" class="w-3.5 h-3.5"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. ARCHITECTURE VIEW -->
+    <div id="view-architecture" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">System Architecture: 10-Stage Pipeline</h2>
+        <p class="text-xs text-slate-500 mt-1">Multi-step agentic processing pipeline operating with structured Pydantic models.</p>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 1</span>
+            <div class="font-bold text-slate-900 mt-1">Multi-Modal Ingestion</div>
+            <p class="text-slate-500 mt-1">Ingests Meeting transcripts, 5 Email threads, 2 Voice notes, 4 Calendars.</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 2</span>
+            <div class="font-bold text-slate-900 mt-1">Normalization Engine</div>
+            <p class="text-slate-500 mt-1">Standardizes user email, participant identities, and anchor week (21-25 Sep 2026).</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 3</span>
+            <div class="font-bold text-slate-900 mt-1">Commitment Extraction</div>
+            <p class="text-slate-500 mt-1">Extracts explicit promises, requests, deliverables, and assignments.</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 4</span>
+            <div class="font-bold text-slate-900 mt-1">Deadline & Ownership</div>
+            <p class="text-slate-500 mt-1">Resolves relative dates to ISO timestamps. Separates Arjun vs Other vs Unclear.</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 5</span>
+            <div class="font-bold text-slate-900 mt-1">Cross-Source Deduplication</div>
+            <p class="text-slate-500 mt-1">Merges identical actions across Meeting, Email, and Voice Note into 1 consolidated action.</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 6</span>
+            <div class="font-bold text-slate-900 mt-1">Conflict Resolution</div>
+            <p class="text-slate-500 mt-1">Applies latest explicit evidence rule (e.g. Campaign deck moved Wed -> Thu 9:30 AM).</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 7</span>
+            <div class="font-bold text-slate-900 mt-1">Calendar Intelligence</div>
+            <p class="text-slate-500 mt-1">Detects schedule overlaps (e.g. Thu 9:30 AM Campaign deck vs 9:00-10:00 Board Prep).</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 8</span>
+            <div class="font-bold text-slate-900 mt-1">State & SQLite Database</div>
+            <p class="text-slate-500 mt-1">Persists normalized actions, source links, and audit traces in SQLite.</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 9</span>
+            <div class="font-bold text-slate-900 mt-1">Daily Brief Generator</div>
+            <p class="text-slate-500 mt-1">Generates executive brief, KPI cards, and priority action lists.</p>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <span class="font-bold text-sky-600">Stage 10</span>
+            <div class="font-bold text-slate-900 mt-1">Grounded Q&A Agent</div>
+            <p class="text-slate-500 mt-1">Answers natural language questions with source citations and Rule 7 safety.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. ASSUMPTIONS VIEW -->
+    <div id="view-assumptions" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">Sources & Assumptions</h2>
+        <p class="text-xs text-slate-500 mt-1">Formal constraints, anchor calendar parameters, and business assumptions.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3 text-xs">
+          <h3 class="font-bold text-sm text-slate-900 flex items-center space-x-2">
+            <i data-lucide="database" class="w-4 h-4 text-sky-600"></i>
+            <span>Canonical Data Sources</span>
+          </h3>
+          <ul class="list-disc list-inside space-y-1.5 text-slate-600">
+            <li><strong>Meeting Transcript</strong>: Leadership Sync — 21 September 2026 (10:00–11:00 AM).</li>
+            <li><strong>Calendars</strong>: Arjun, Neha, Raghav, Divya for week of 21–25 September 2026.</li>
+            <li><strong>Email Threads</strong>: Vendor List, Q3 Campaign Deck, Call Reschedule, Expense Variance, Mumbai Office Lease.</li>
+            <li><strong>Voice Notes</strong>: Voice Note 1 (21 Sep 6:30 PM) & Voice Note 2 (22 Sep 8:45 AM).</li>
+          </ul>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3 text-xs">
+          <h3 class="font-bold text-sm text-slate-900 flex items-center space-x-2">
+            <i data-lucide="compass" class="w-4 h-4 text-indigo-600"></i>
+            <span>Ground-Truth Business Assumptions</span>
+          </h3>
+          <ul class="list-disc list-inside space-y-1.5 text-slate-600">
+            <li><strong>Target User</strong>: Arjun Malhotra (VP Sales, Veridian Corp). The brief is generated strictly from his executive perspective.</li>
+            <li><strong>Simulated Date</strong>: Wednesday, 23 September 2026 is the core evaluation checkpoint.</li>
+            <li><strong>Temporal Precedence</strong>: Later explicit statements supersede earlier tentative statements.</li>
+            <li><strong>Hallucination Defense (Rule 1)</strong>: Ownership is never inferred without explicit confirmation. If unconfirmed, marked Unclear Ownership.</li>
+            <li><strong>Completion Evidence (Rule 3)</strong>: Actions remain open until receipt evidence is recorded.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. AI TOOLS VIEW -->
+    <div id="view-ai-tools" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900">AI Tools & Reasoning Breakdown</h2>
+        <p class="text-xs text-slate-500 mt-1">Transparent distinction between LLM reasoning, deterministic verification, and data persistence.</p>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
+            <tr>
+              <th class="py-3 px-4">Component</th>
+              <th class="py-3 px-4">Execution Type</th>
+              <th class="py-3 px-4">Role & Mechanism</th>
+              <th class="py-3 px-4">Safety Safeguard</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            <tr>
+              <td class="py-3 px-4 font-bold text-slate-900">Commitment Extraction</td>
+              <td class="py-3 px-4"><span class="bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded">LLM Agent</span></td>
+              <td class="py-3 px-4">Identifies personal promises vs requests in transcripts and emails.</td>
+              <td class="py-3 px-4">Strict Pydantic schema validation; speaker-to-owner verification.</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-bold text-slate-900">Deadline Normalizer</td>
+              <td class="py-3 px-4"><span class="bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded">LLM Agent</span></td>
+              <td class="py-3 px-4">Resolves relative phrasing into ISO dates.</td>
+              <td class="py-3 px-4">Rule 2: Never invent a time when unspecified; bound to 21-25 Sep 2026.</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-bold text-slate-900">Cross-Source Deduplication</td>
+              <td class="py-3 px-4"><span class="bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded">Hybrid (LLM + Graph)</span></td>
+              <td class="py-3 px-4">Clusters semantically equivalent commitments across 3+ sources into 1 action.</td>
+              <td class="py-3 px-4">Retains all source references behind single consolidated card.</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-bold text-slate-900">Conflict & Status Engine</td>
+              <td class="py-3 px-4"><span class="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">Deterministic Logic</span></td>
+              <td class="py-3 px-4">Enforces timestamp ordering, delivery verification, and overdue triggers.</td>
+              <td class="py-3 px-4">Rule 3 & 4: Explicit delivery proof required for COMPLETED status.</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-bold text-slate-900">Grounded Q&A Agent</td>
+              <td class="py-3 px-4"><span class="bg-indigo-100 text-indigo-800 font-semibold px-2 py-0.5 rounded">Hybrid RAG</span></td>
+              <td class="py-3 px-4">Retrieves structured action state and cites specific verbatim source quotes.</td>
+              <td class="py-3 px-4">Rule 7: Fallback to refusal when evidence is absent in source data.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- ACTION DETAIL AUDIT MODAL -->
+  <div id="action-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 space-y-4">
+      <div class="flex justify-between items-start border-b border-slate-100 pb-3">
+        <div>
+          <span id="modal-status-badge" class="text-xs font-bold px-2 py-0.5 rounded"></span>
+          <h3 id="modal-title" class="text-lg font-bold text-slate-900 mt-1"></h3>
+          <p id="modal-subtitle" class="text-xs text-slate-500"></p>
+        </div>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div>
+          <span class="font-bold text-slate-700 uppercase tracking-wider">Why This Action Exists</span>
+          <p id="modal-why" class="text-slate-600 mt-1 leading-relaxed bg-slate-50 p-2.5 rounded border border-slate-200"></p>
+        </div>
+        <div>
+          <span class="font-bold text-slate-700 uppercase tracking-wider">Latest Evidence</span>
+          <p id="modal-latest-evidence" class="text-slate-700 font-medium mt-1 bg-amber-50/60 p-2.5 rounded border border-amber-200"></p>
+        </div>
+        <div>
+          <span class="font-bold text-slate-700 uppercase tracking-wider">Source References (<span id="modal-source-count"></span> Sources Consolidated)</span>
+          <div id="modal-sources-list" class="space-y-2 mt-2"></div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex justify-end">
+        <button onclick="closeModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs transition">
+          Close Audit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let globalBrief = null;
+    let globalActions = [];
+    let globalCalendar = [];
+    let globalSources = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      await fetchInitialData();
+    });
+
+    async function fetchInitialData() {
+      try {
+        const [briefRes, actionsRes, calRes, sourcesRes] = await Promise.all([
+          fetch('/api/brief?date=2026-09-23'),
+          fetch('/api/actions'),
+          fetch('/api/calendar'),
+          fetch('/api/sources')
+        ]);
+        globalBrief = await briefRes.json();
+        globalActions = await actionsRes.json();
+        globalCalendar = await calRes.json();
+        globalSources = await sourcesRes.json();
+
+        renderDashboard();
+        renderMyActionsTable();
+        renderWaitingCards();
+        renderCalendarView();
+        renderSourcesView();
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) activeNav.classList.add('tab-active');
+
+      const views = ['dashboard', 'my-actions', 'waiting', 'unclear', 'calendar', 'sources', 'qa', 'architecture', 'assumptions', 'ai-tools'];
+      views.forEach(v => {
+        const el = document.getElementById('view-' + v);
+        if (el) {
+          if (v === tabId) el.classList.remove('hidden');
+          else el.classList.add('hidden');
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function renderDashboard() {
+      if (!globalBrief) return;
+      document.getElementById('kpi-my-actions').innerText = globalBrief.kpis.my_actions;
+      document.getElementById('kpi-waiting').innerText = globalBrief.kpis.waiting_others;
+      document.getElementById('kpi-overdue').innerText = globalBrief.kpis.overdue;
+      document.getElementById('kpi-unclear').innerText = globalBrief.kpis.unclear_ownership;
+      document.getElementById('kpi-completed').innerText = globalBrief.kpis.completed;
+
+      const actionsContainer = document.getElementById('dashboard-today-actions');
+      actionsContainer.innerHTML = '';
+      globalBrief.needs_action_today.forEach(a => {
+        const isOverdue = a.status === 'OVERDUE';
+        const badgeColor = isOverdue ? 'bg-red-100 text-red-800' : 'bg-sky-100 text-sky-800';
+        actionsContainer.innerHTML += `
+          <div class="py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 hover:bg-slate-50/50 p-2 rounded-lg transition">
+            <div class="space-y-0.5">
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-bold ${badgeColor} px-2 py-0.5 rounded">${a.status}</span>
+                <span class="font-bold text-sm text-slate-900">${a.action}</span>
+              </div>
+              <p class="text-xs text-slate-500">Stakeholder: <strong>${a.stakeholder}</strong> • Deadline: <strong>${a.deadline}</strong></p>
+              <p class="text-xs text-slate-600 line-clamp-1 italic">${a.latest_evidence}</p>
+            </div>
+            <button onclick="openActionModal('${a.id}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg border border-slate-200 self-start sm:self-auto shrink-0 transition">
+              Audit Sources (${a.deduplication_count})
+            </button>
+          </div>
+        `;
+      });
+
+      const risksContainer = document.getElementById('dashboard-key-risks');
+      risksContainer.innerHTML = '';
+      globalBrief.key_risks.forEach(r => {
+        const isCrit = r.severity === 'Critical';
+        const bgClass = isCrit ? 'bg-amber-50/80 border-amber-200' : 'bg-slate-50 border-slate-200';
+        const badgeClass = isCrit ? 'bg-amber-200 text-amber-900' : 'bg-slate-200 text-slate-800';
+        risksContainer.innerHTML += `
+          <div class="p-3.5 rounded-xl border ${bgClass} flex items-start justify-between gap-3 text-xs">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="font-bold ${badgeClass} px-2 py-0.5 rounded text-[10px] uppercase">${r.severity}</span>
+                <span class="font-bold text-slate-900 text-sm">${r.title}</span>
+              </div>
+              <p class="text-slate-600 mt-1 leading-relaxed">${r.description}</p>
+              <div class="mt-2 text-slate-500">Owner: <strong>${r.owner_status}</strong> • Deadline: <strong>${r.deadline}</strong></div>
+            </div>
+            ${r.action_ref_id ? `<button onclick="openActionModal('${r.action_ref_id}')" class="shrink-0 text-sky-600 hover:text-sky-800 font-semibold underline text-xs">View</button>` : ''}
+          </div>
+        `;
+      });
+
+      const calContainer = document.getElementById('dashboard-calendar');
+      calContainer.innerHTML = '';
+      if (globalBrief.todays_calendar.length === 0) {
+        calContainer.innerHTML = '<p class="text-xs text-slate-400 italic">No meetings scheduled for today.</p>';
+      } else {
+        globalBrief.todays_calendar.forEach(ev => {
+          calContainer.innerHTML += `
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1 text-xs">
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-slate-900">${ev.title}</span>
+                <span class="text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded border border-sky-200">${ev.start_time} - ${ev.end_time}</span>
+              </div>
+              <p class="text-slate-500">Attendees: ${ev.attendees.join(', ')}</p>
+              ${ev.notes ? `<p class="text-slate-600 italic text-[11px]">${ev.notes}</p>` : ''}
+            </div>
+          `;
+        });
+      }
+      lucide.createIcons();
+    }
+
+    function renderMyActionsTable() {
+      const tbody = document.getElementById('my-actions-tbody');
+      tbody.innerHTML = '';
+      const filter = document.getElementById('filter-my-actions').value;
+
+      const myActions = globalActions.filter(a => {
+        if (a.ownership_status !== 'ARJUN') return false;
+        if (filter !== 'ALL' && a.status !== filter) return false;
+        return true;
+      });
+
+      myActions.forEach(a => {
+        let badge = 'bg-slate-100 text-slate-700';
+        if (a.status === 'OVERDUE') badge = 'bg-red-100 text-red-800 font-bold';
+        else if (a.status === 'DUE_TODAY') badge = 'bg-blue-100 text-blue-800 font-bold';
+        else if (a.status === 'UPCOMING') badge = 'bg-emerald-100 text-emerald-800 font-medium';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="py-3 px-4 font-semibold text-slate-900">${a.action}</td>
+            <td class="py-3 px-4 text-slate-600">${a.stakeholder}</td>
+            <td class="py-3 px-4 text-slate-600">${a.deadline}</td>
+            <td class="py-3 px-4"><span class="text-xs px-2 py-0.5 rounded ${badge}">${a.status}</span></td>
+            <td class="py-3 px-4">
+              <span class="text-xs bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded">
+                ${a.deduplication_count} Sources Merged
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <button onclick="openActionModal('${a.id}')" class="text-xs bg-sky-50 text-sky-700 hover:bg-sky-100 font-semibold px-2.5 py-1 rounded border border-sky-200 transition">
+                Audit Trail
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function renderWaitingCards() {
+      const container = document.getElementById('waiting-cards-container');
+      container.innerHTML = '';
+      const waiting = globalActions.filter(a => a.ownership_status === 'OTHER');
+
+      waiting.forEach(a => {
+        const isComp = a.status === 'COMPLETED';
+        const cardBg = isComp ? 'bg-emerald-50/40 border-emerald-200' : 'bg-white border-slate-200';
+        const badgeColor = isComp ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
+
+        container.innerHTML += `
+          <div class="p-5 rounded-xl border ${cardBg} shadow-sm space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-bold px-2 py-0.5 rounded ${badgeColor}">${a.status}</span>
+                  <h3 class="font-bold text-slate-900 text-base">${a.action}</h3>
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Owner: <strong>${a.owner}</strong> • Deadline: <strong>${a.deadline}</strong></p>
+              </div>
+              <button onclick="openActionModal('${a.id}')" class="text-xs bg-slate-100 hover:bg-slate-200 font-semibold px-3 py-1.5 rounded-lg border border-slate-200 self-start transition">
+                Audit Evidence (${a.deduplication_count} Sources)
+              </button>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 text-xs text-slate-700 space-y-1">
+              <div><strong>Latest Source Evidence:</strong> ${a.latest_evidence}</div>
+              ${a.conflict_note ? `<div class="text-amber-800"><strong>Note:</strong> ${a.conflict_note}</div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function renderCalendarView() {
+      const container = document.getElementById('full-week-calendar');
+      container.innerHTML = '';
+      const days = [
+        { name: 'Monday', date: '2026-09-21' },
+        { name: 'Tuesday', date: '2026-09-22' },
+        { name: 'Wednesday', date: '2026-09-23', active: true },
+        { name: 'Thursday', date: '2026-09-24' },
+        { name: 'Friday', date: '2026-09-25' }
+      ];
+
+      days.forEach(d => {
+        const events = globalCalendar.filter(e => e.date === d.date);
+        const dayHeaderBg = d.active ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-800';
+
+        let eventsHtml = '';
+        if (events.length === 0) {
+          eventsHtml = '<p class="text-xs text-slate-400 italic p-2">No meetings</p>';
+        } else {
+          events.forEach(ev => {
+            const conflictClass = ev.has_conflict ? 'border-amber-400 bg-amber-50/80' : 'border-slate-200 bg-white';
+            eventsHtml += `
+              <div class="p-3 rounded-lg border ${conflictClass} space-y-1 text-xs shadow-xs">
+                <div class="flex justify-between items-start">
+                  <span class="font-bold text-slate-900">${ev.title}</span>
+                  <span class="text-[10px] font-bold text-slate-500">${ev.start_time}</span>
+                </div>
+                <p class="text-slate-500 text-[11px]">${ev.attendees.join(', ')}</p>
+                ${ev.has_conflict ? `<div class="text-[11px] font-bold text-amber-800 mt-1 bg-amber-100 p-1.5 rounded">${ev.conflict_reason}</div>` : ''}
+              </div>
+            `;
+          });
+        }
+
+        container.innerHTML += `
+          <div class="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden flex flex-col">
+            <div class="p-3 font-bold text-xs text-center ${dayHeaderBg}">
+              ${d.name} • ${d.date.slice(5)}
+            </div>
+            <div class="p-3 space-y-2 flex-1">
+              ${eventsHtml}
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function renderSourcesView() {
+      if (!globalSources) return;
+      const container = document.getElementById('raw-sources-container');
+      container.innerHTML = `
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="users" class="w-5 h-5 text-sky-600"></i>
+            <h3 class="font-bold text-slate-900 text-base">Meeting Transcript: Leadership Sync (21 Sep 2026)</h3>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 max-h-60 overflow-y-auto space-y-2 text-xs">
+            ${globalSources.meeting_transcripts[0].dialogue.map(d => `
+              <div><strong class="text-slate-800">${d.speaker}:</strong> <span class="text-slate-600">${d.text}</span></div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="mail" class="w-5 h-5 text-indigo-600"></i>
+            <h3 class="font-bold text-slate-900 text-base">Email Threads (5 Core Assignment Threads)</h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${globalSources.email_threads.map(t => `
+              <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-2">
+                <div class="font-bold text-slate-900 text-sm">${t.subject}</div>
+                <div class="text-slate-500 font-medium">${t.messages.length} Messages in thread</div>
+                <div class="space-y-1.5 pt-2 border-t border-slate-200">
+                  ${t.messages.map(m => `
+                    <div class="p-2 bg-white rounded border border-slate-100">
+                      <div class="flex justify-between font-bold text-slate-800 text-[11px]">
+                        <span>${m.sender}</span>
+                        <span class="text-slate-400 font-normal">${m.date_display}</span>
+                      </div>
+                      <p class="text-slate-600 mt-1 line-clamp-2">${m.body}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="mic" class="w-5 h-5 text-rose-600"></i>
+            <h3 class="font-bold text-slate-900 text-base">Voice Note Transcripts</h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            ${globalSources.voice_notes.map(v => `
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+                <div class="flex justify-between font-bold text-slate-900">
+                  <span>${v.title} (${v.speaker})</span>
+                  <span class="text-slate-400 font-normal">${v.date_display}</span>
+                </div>
+                <p class="text-slate-600 italic bg-white p-2.5 rounded border border-slate-100">"${v.transcript}"</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function openActionModal(actionId) {
+      const action = globalActions.find(a => a.id === actionId);
+      if (!action) return;
+
+      document.getElementById('modal-title').innerText = action.action;
+      document.getElementById('modal-subtitle').innerText = `Owner: ${action.owner} • Stakeholder: ${action.stakeholder} • Deadline: ${action.deadline}`;
+      
+      const badge = document.getElementById('modal-status-badge');
+      badge.innerText = action.status;
+      badge.className = action.status === 'OVERDUE' ? 'bg-red-100 text-red-800 text-xs font-bold px-2 py-0.5 rounded' : 'bg-sky-100 text-sky-800 text-xs font-bold px-2 py-0.5 rounded';
+
+      document.getElementById('modal-why').innerText = action.why_exists;
+      document.getElementById('modal-latest-evidence').innerText = action.latest_evidence;
+      document.getElementById('modal-source-count').innerText = action.sources.length;
+
+      const sourcesList = document.getElementById('modal-sources-list');
+      sourcesList.innerHTML = '';
+      action.sources.forEach(s => {
+        sourcesList.innerHTML += `
+          <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="flex justify-between font-bold text-slate-800">
+              <span class="text-sky-700 font-semibold">${s.reference_tag}</span>
+              <span class="text-slate-400 font-normal">${s.date_display}</span>
+            </div>
+            <p class="text-slate-600 italic mt-1 bg-white p-2 rounded border border-slate-100">"${s.quote}"</p>
+          </div>
+        `;
+      });
+
+      document.getElementById('action-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('action-modal').classList.add('hidden');
+    }
+
+    async function askPreset(query) {
+      document.getElementById('chat-input').value = query;
+      await submitQuestion(query);
+    }
+
+    async function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const query = input.value.trim();
+      if (!query) return;
+      input.value = '';
+      await submitQuestion(query);
+    }
+
+    async function submitQuestion(query) {
+      const messagesContainer = document.getElementById('chat-messages');
+      messagesContainer.innerHTML += `
+        <div class="flex items-start justify-end space-x-3">
+          <div class="bg-sky-600 text-white p-3 rounded-2xl rounded-tr-none max-w-xl text-xs shadow-sm">
+            ${query}
+          </div>
+        </div>
+      `;
+
+      const loaderId = 'loader-' + Date.now();
+      messagesContainer.innerHTML += `
+        <div id="${loaderId}" class="flex items-center space-x-2 text-slate-400 text-xs p-2">
+          <i data-lucide="loader" class="w-4 h-4 animate-spin text-sky-600"></i>
+          <span>Synthesizing grounded answer with citations...</span>
+        </div>
+      `;
+      lucide.createIcons();
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+        const data = await res.json();
+        document.getElementById(loaderId)?.remove();
+
+        let sourcesHtml = '';
+        if (data.sources && data.sources.length > 0) {
+          sourcesHtml = `
+            <div class="pt-2 mt-2 border-t border-slate-200">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Grounded Source Citations:</span>
+              <div class="space-y-1 mt-1">
+                ${data.sources.map(s => `
+                  <div class="text-[11px] text-slate-600 bg-white p-1.5 rounded border border-slate-200">
+                    <span class="font-bold text-sky-700">${s.reference_tag}</span>: "${s.quote}"
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        messagesContainer.innerHTML += `
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow">
+              <i data-lucide="bot" class="w-4 h-4"></i>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl rounded-tl-none max-w-2xl text-xs space-y-2">
+              <div class="text-slate-800 leading-relaxed whitespace-pre-line">${data.answer}</div>
+              ${sourcesHtml}
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        document.getElementById(loaderId)?.remove();
+        messagesContainer.innerHTML += `
+          <div class="text-xs text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+            Error retrieving response from agent pipeline.
+          </div>
+        `;
+      }
+      lucide.createIcons();
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    async function retriggerPipeline() {
+      try {
+        await fetch('/api/pipeline/run', { method: 'POST' });
+        await fetchInitialData();
+        alert('Pipeline re-executed successfully! Data refreshed.');
+      } catch (err) {
+        alert('Error triggering pipeline');
+      }
+    }
+  </script>
+</body>
+</html>

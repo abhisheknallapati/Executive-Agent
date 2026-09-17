@@ -1,0 +1,450 @@
+﻿"""
+Seed Data for Executive Productivity Agent — AIONOS
+Week: Monday, 21 September 2026 – Friday, 25 September 2026
+
+Target User: Arjun Malhotra — VP Sales (arjun.malhotra@veridian-corp.example)
+Organization: Veridian Corp
+"""
+
+import json
+
+PEOPLE = {
+    "arjun": {
+        "name": "Arjun Malhotra",
+        "role": "VP Sales",
+        "email": "arjun.malhotra@veridian-corp.example",
+        "is_agent_user": True
+    },
+    "neha": {
+        "name": "Neha Kapoor",
+        "role": "Marketing Lead",
+        "email": "neha.kapoor@veridian-corp.example",
+        "is_agent_user": False
+    },
+    "raghav": {
+        "name": "Raghav Sethi",
+        "role": "Ops Manager",
+        "email": "raghav.sethi@veridian-corp.example",
+        "is_agent_user": False
+    },
+    "divya": {
+        "name": "Divya Rao",
+        "role": "Finance Lead",
+        "email": "divya.rao@veridian-corp.example",
+        "is_agent_user": False
+    },
+    "priya": {
+        "name": "Priya Nair",
+        "role": "Client Contact, Meridian Logistics",
+        "email": "priya.nair@meridian-logistics.example",
+        "is_agent_user": False
+    },
+    "facilities": {
+        "name": "Facilities Team",
+        "role": "Internal Distribution List",
+        "email": "facilities@veridian-corp.example",
+        "is_agent_user": False
+    }
+}
+
+MEETING_TRANSCRIPTS = [
+    {
+        "id": "meet_leadership_sync_01",
+        "title": "Leadership Sync",
+        "date": "2026-09-21",
+        "time": "10:00 - 11:00",
+        "participants": ["Arjun Malhotra", "Neha Kapoor", "Raghav Sethi", "Divya Rao"],
+        "dialogue": [
+            {
+                "speaker": "Raghav Sethi",
+                "text": "Thanks everyone. Arjun, do you have an update on the revised vendor shortlist for the upcoming logistics vendor consolidation?"
+            },
+            {
+                "speaker": "Arjun Malhotra",
+                "text": "I'm finalizing the scorecards today. I promise I'll get you the updated vendor list by Wednesday morning so ops can review before noon."
+            },
+            {
+                "speaker": "Raghav Sethi",
+                "text": "Great, thanks Arjun. Having it Wednesday morning will give us enough runway for the 11:00 AM review."
+            },
+            {
+                "speaker": "Neha Kapoor",
+                "text": "On the marketing side, the Q3 Campaign Deck is progressing well. We are pulling in the final regional conversion metrics. I'll share the draft deck by Wednesday afternoon for team review."
+            },
+            {
+                "speaker": "Divya Rao",
+                "text": "From finance, regarding Q3 spend, the expense variance report is scheduled to be completed by Thursday morning."
+            },
+            {
+                "speaker": "Arjun Malhotra",
+                "text": "Divya, could we possibly get that by Wednesday evening instead? Board prep is scheduled first thing Thursday at 9:00 AM, and I really need those variance figures before stepping into that meeting."
+            },
+            {
+                "speaker": "Divya Rao",
+                "text": "I will see what I can do. If ops closes their numbers by Wednesday midday, I can aim to have the expense variance report over to you Wednesday evening."
+            },
+            {
+                "speaker": "Raghav Sethi",
+                "text": "One urgent administrative item: Facilities sent a notice that the Mumbai office lease renewal requires an authorized signature by this Friday, 25 September. Who is taking ownership of signing this?"
+            },
+            {
+                "speaker": "Divya Rao",
+                "text": "Facilities normally handles real estate lease renewals and coordination. That doesn't fall under Finance."
+            },
+            {
+                "speaker": "Raghav Sethi",
+                "text": "Right, but Facilities flagged it as unassigned. We need someone confirmed to sign it. Let's make sure someone actually owns it before Friday."
+            }
+        ]
+    }
+]
+
+EMAIL_THREADS = [
+    {
+        "id": "email_thread_vendor_list",
+        "subject": "Vendor List for Procurement Sync",
+        "category": "Vendor List",
+        "messages": [
+            {
+                "id": "msg_vl_01",
+                "sender": "Raghav Sethi",
+                "sender_email": "raghav.sethi@veridian-corp.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-21T11:30:00",
+                "date_display": "Monday, 21 Sep 2026, 11:30 AM",
+                "body": "Hi Arjun, following up from our leadership sync: please ensure you send over the updated vendor list by Wednesday morning. We need it ahead of our 11:00 AM procurement review."
+            },
+            {
+                "id": "msg_vl_02",
+                "sender": "Arjun Malhotra",
+                "sender_email": "arjun.malhotra@veridian-corp.example",
+                "recipients": ["Raghav Sethi"],
+                "timestamp": "2026-09-21T14:15:00",
+                "date_display": "Monday, 21 Sep 2026, 2:15 PM",
+                "body": "On it, Raghav. I will have the updated vendor list sent over to you Wednesday morning without fail."
+            },
+            {
+                "id": "msg_vl_03",
+                "sender": "Raghav Sethi",
+                "sender_email": "raghav.sethi@veridian-corp.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-23T08:45:00",
+                "date_display": "Wednesday, 23 Sep 2026, 8:45 AM",
+                "body": "Hi Arjun, just checking — still good for this morning? Need the vendor list before 11:00 AM."
+            }
+        ]
+    },
+    {
+        "id": "email_thread_campaign_deck",
+        "subject": "Q3 Campaign Deck Review Schedule",
+        "category": "Q3 Campaign Deck",
+        "messages": [
+            {
+                "id": "msg_cd_01",
+                "sender": "Neha Kapoor",
+                "sender_email": "neha.kapoor@veridian-corp.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-21T15:00:00",
+                "date_display": "Monday, 21 Sep 2026, 3:00 PM",
+                "body": "Hi Arjun, wrapping up the initial slides for the Q3 Campaign Deck. As mentioned in the sync, I plan to send you the deck Wednesday afternoon for review."
+            },
+            {
+                "id": "msg_cd_02",
+                "sender": "Neha Kapoor",
+                "sender_email": "neha.kapoor@veridian-corp.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-22T16:30:00",
+                "date_display": "Tuesday, 22 Sep 2026, 4:30 PM",
+                "body": "Arjun, our creative agency needs more time on the attribution data. Moving our review to Thursday 24 September at 9:30 AM. Does that work?"
+            },
+            {
+                "id": "msg_cd_03",
+                "sender": "Arjun Malhotra",
+                "sender_email": "arjun.malhotra@veridian-corp.example",
+                "recipients": ["Neha Kapoor"],
+                "timestamp": "2026-09-22T17:10:00",
+                "date_display": "Tuesday, 22 Sep 2026, 5:10 PM",
+                "body": "Thursday 9:30 AM works for me. Looking forward to reviewing the updated metrics."
+            }
+        ]
+    },
+    {
+        "id": "email_thread_call_reschedule",
+        "subject": "Reschedule: Weekly Meridian Logistics Sync",
+        "category": "Call Reschedule",
+        "messages": [
+            {
+                "id": "msg_mr_01",
+                "sender": "Priya Nair",
+                "sender_email": "priya.nair@meridian-logistics.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-21T16:00:00",
+                "date_display": "Monday, 21 Sep 2026, 4:00 PM",
+                "body": "Hi Arjun, due to client travel delays, I will be unable to attend our Monday sync. Could we reschedule our weekly call to Wednesday afternoon?"
+            },
+            {
+                "id": "msg_mr_02",
+                "sender": "Arjun Malhotra",
+                "sender_email": "arjun.malhotra@veridian-corp.example",
+                "recipients": ["Priya Nair"],
+                "timestamp": "2026-09-22T11:00:00",
+                "date_display": "Tuesday, 22 Sep 2026, 11:00 AM",
+                "body": "Hi Priya, completely understand. How does Wednesday 23 September at 3:00 PM work on your end?"
+            },
+            {
+                "id": "msg_mr_03",
+                "sender": "Priya Nair",
+                "sender_email": "priya.nair@meridian-logistics.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-22T13:30:00",
+                "date_display": "Tuesday, 22 Sep 2026, 1:30 PM",
+                "body": "Wednesday at 3:00 PM works perfectly. Calendar invite accepted. Talk to you then!"
+            }
+        ]
+    },
+    {
+        "id": "email_thread_expense_variance",
+        "subject": "Q3 Expense Variance Report Timing",
+        "category": "Expense Variance Report",
+        "messages": [
+            {
+                "id": "msg_ev_01",
+                "sender": "Divya Rao",
+                "sender_email": "divya.rao@veridian-corp.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-21T17:00:00",
+                "date_display": "Monday, 21 Sep 2026, 5:00 PM",
+                "body": "Hi Arjun, confirming our discussion from earlier today. Initial target for the Q3 Expense Variance Report was Thursday morning before the board meeting."
+            },
+            {
+                "id": "msg_ev_02",
+                "sender": "Arjun Malhotra",
+                "sender_email": "arjun.malhotra@veridian-corp.example",
+                "recipients": ["Divya Rao"],
+                "timestamp": "2026-09-22T09:15:00",
+                "date_display": "Tuesday, 22 Sep 2026, 9:15 AM",
+                "body": "Hi Divya, as requested in the sync, could we please have the expense variance report by Wednesday evening? I have Board Prep first thing Thursday at 9:00 AM and need to review numbers beforehand."
+            },
+            {
+                "id": "msg_ev_03",
+                "sender": "Divya Rao",
+                "sender_email": "divya.rao@veridian-corp.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-22T10:00:00",
+                "date_display": "Tuesday, 22 Sep 2026, 10:00 AM",
+                "body": "Understood. I will push to deliver the report Wednesday by 6:00 PM."
+            },
+            {
+                "id": "msg_ev_04",
+                "sender": "Divya Rao",
+                "sender_email": "divya.rao@veridian-corp.example",
+                "recipients": ["Arjun Malhotra"],
+                "timestamp": "2026-09-23T17:45:00",
+                "date_display": "Wednesday, 23 Sep 2026, 5:45 PM",
+                "body": "Hi Arjun, please find attached the completed Q3 Expense Variance Report as promised. All regional numbers are reconciled."
+            },
+            {
+                "id": "msg_ev_05",
+                "sender": "Arjun Malhotra",
+                "sender_email": "arjun.malhotra@veridian-corp.example",
+                "recipients": ["Divya Rao"],
+                "timestamp": "2026-09-23T18:15:00",
+                "date_display": "Wednesday, 23 Sep 2026, 6:15 PM",
+                "body": "Received with thanks, Divya. Reviewing now ahead of tomorrow's board prep."
+            }
+        ]
+    },
+    {
+        "id": "email_thread_lease_renewal",
+        "subject": "ACTION REQUIRED: Mumbai Office Lease Renewal Agreement",
+        "category": "Mumbai Office Lease Renewal",
+        "messages": [
+            {
+                "id": "msg_lr_01",
+                "sender": "Facilities Team",
+                "sender_email": "facilities@veridian-corp.example",
+                "recipients": ["Raghav Sethi", "Arjun Malhotra", "Divya Rao"],
+                "timestamp": "2026-09-21T13:00:00",
+                "date_display": "Monday, 21 Sep 2026, 1:00 PM",
+                "body": "Notice: The Mumbai Office lease renewal agreement signature is required by Friday, 25 September 2026, 5:00 PM IST (end of day) to avoid lapse and escalation penalties."
+            },
+            {
+                "id": "msg_lr_02",
+                "sender": "Raghav Sethi",
+                "sender_email": "raghav.sethi@veridian-corp.example",
+                "recipients": ["Facilities Team", "Arjun Malhotra", "Divya Rao"],
+                "timestamp": "2026-09-22T10:30:00",
+                "date_display": "Tuesday, 22 Sep 2026, 10:30 AM",
+                "body": "Looping in Arjun & Divya. Who has authority and is signing this renewal?"
+            },
+            {
+                "id": "msg_lr_03",
+                "sender": "Divya Rao",
+                "sender_email": "divya.rao@veridian-corp.example",
+                "recipients": ["Raghav Sethi", "Facilities Team", "Arjun Malhotra"],
+                "timestamp": "2026-09-22T14:00:00",
+                "date_display": "Tuesday, 22 Sep 2026, 2:00 PM",
+                "body": "Facilities normally coordinates real estate lease execution and authorized signatory. It is not on Finance's plate."
+            },
+            {
+                "id": "msg_lr_04",
+                "sender": "Raghav Sethi",
+                "sender_email": "raghav.sethi@veridian-corp.example",
+                "recipients": ["Facilities Team", "Arjun Malhotra", "Divya Rao"],
+                "timestamp": "2026-09-23T11:00:00",
+                "date_display": "Wednesday, 23 Sep 2026, 11:00 AM",
+                "body": "Facilities team: please clarify owner immediately. As of today, this agreement remains unassigned and unowned."
+            }
+        ]
+    }
+]
+
+VOICE_NOTES = [
+    {
+        "id": "vn_01",
+        "title": "Voice Note 1",
+        "speaker": "Arjun Malhotra",
+        "recorded_at": "2026-09-21T18:30:00",
+        "date_display": "Monday, 21 Sep 2026, 6:30 PM",
+        "duration_seconds": 42,
+        "transcript": "Quick memo to self: Need to finalize the vendor shortlist for Raghav by Wednesday morning before ops sync. Also must ping Priya to lock down the Meridian call."
+    },
+    {
+        "id": "vn_02",
+        "title": "Voice Note 2",
+        "speaker": "Arjun Malhotra",
+        "recorded_at": "2026-09-22T08:45:00",
+        "date_display": "Tuesday, 22 Sep 2026, 8:45 AM",
+        "duration_seconds": 35,
+        "transcript": "Reminder: Need to review regional sales targets before Thursday's leadership session. Follow up with Divya on getting variance numbers before board prep."
+    }
+]
+
+CALENDARS = {
+    "arjun": [
+        {
+            "id": "cal_arj_01",
+            "title": "Leadership Sync",
+            "day": "Monday",
+            "date": "2026-09-21",
+            "start_time": "10:00",
+            "end_time": "11:00",
+            "attendees": ["Arjun Malhotra", "Neha Kapoor", "Raghav Sethi", "Divya Rao"],
+            "location": "Boardroom A / Zoom"
+        },
+        {
+            "id": "cal_arj_02",
+            "title": "Meridian Logistics Client Sync",
+            "day": "Wednesday",
+            "date": "2026-09-23",
+            "start_time": "15:00",
+            "end_time": "15:45",
+            "attendees": ["Arjun Malhotra", "Priya Nair"],
+            "location": "Client Video Bridge",
+            "notes": "Rescheduled from Monday per Priya's request"
+        },
+        {
+            "id": "cal_arj_03",
+            "title": "Board Prep Session",
+            "day": "Thursday",
+            "date": "2026-09-24",
+            "start_time": "09:00",
+            "end_time": "10:00",
+            "attendees": ["Arjun Malhotra", "Divya Rao", "Executive Committee"],
+            "location": "Executive Conf Room"
+        },
+        {
+            "id": "cal_arj_04",
+            "title": "Q3 Campaign Deck Review",
+            "day": "Thursday",
+            "date": "2026-09-24",
+            "start_time": "09:30",
+            "end_time": "10:30",
+            "attendees": ["Arjun Malhotra", "Neha Kapoor"],
+            "location": "Marketing Suite / Zoom",
+            "notes": "Rescheduled by Neha from Wednesday afternoon. Overlaps with Board Prep Session (9:00-10:00 AM)!"
+        },
+        {
+            "id": "cal_arj_05",
+            "title": "Facilities Check-in",
+            "day": "Friday",
+            "date": "2026-09-25",
+            "start_time": "10:00",
+            "end_time": "10:30",
+            "attendees": ["Arjun Malhotra", "Facilities Team"],
+            "location": "Building Operations Office"
+        }
+    ],
+    "neha": [
+        {
+            "id": "cal_neh_01",
+            "title": "Leadership Sync",
+            "day": "Monday",
+            "date": "2026-09-21",
+            "start_time": "10:00",
+            "end_time": "11:00",
+            "attendees": ["Arjun Malhotra", "Neha Kapoor", "Raghav Sethi", "Divya Rao"]
+        },
+        {
+            "id": "cal_neh_02",
+            "title": "Q3 Campaign Deck Review",
+            "day": "Thursday",
+            "date": "2026-09-24",
+            "start_time": "09:30",
+            "end_time": "10:30",
+            "attendees": ["Arjun Malhotra", "Neha Kapoor"]
+        }
+    ],
+    "raghav": [
+        {
+            "id": "cal_rag_01",
+            "title": "Leadership Sync",
+            "day": "Monday",
+            "date": "2026-09-21",
+            "start_time": "10:00",
+            "end_time": "11:00",
+            "attendees": ["Arjun Malhotra", "Neha Kapoor", "Raghav Sethi", "Divya Rao"]
+        },
+        {
+            "id": "cal_rag_02",
+            "title": "Ops Vendor Review",
+            "day": "Wednesday",
+            "date": "2026-09-23",
+            "start_time": "11:00",
+            "end_time": "12:00",
+            "attendees": ["Raghav Sethi", "Operations Team"]
+        }
+    ],
+    "divya": [
+        {
+            "id": "cal_div_01",
+            "title": "Leadership Sync",
+            "day": "Monday",
+            "date": "2026-09-21",
+            "start_time": "10:00",
+            "end_time": "11:00",
+            "attendees": ["Arjun Malhotra", "Neha Kapoor", "Raghav Sethi", "Divya Rao"]
+        },
+        {
+            "id": "cal_div_02",
+            "title": "Board Prep Session",
+            "day": "Thursday",
+            "date": "2026-09-24",
+            "start_time": "09:00",
+            "end_time": "10:00",
+            "attendees": ["Arjun Malhotra", "Divya Rao", "Executive Committee"]
+        }
+    ]
+}
+
+def export_seed_data_json() -> str:
+    return json.dumps({
+        "people": PEOPLE,
+        "meeting_transcripts": MEETING_TRANSCRIPTS,
+        "email_threads": EMAIL_THREADS,
+        "voice_notes": VOICE_NOTES,
+        "calendars": CALENDARS
+    }, indent=2)
+
+if __name__ == "__main__":
+    print("Seed data loaded successfully.")

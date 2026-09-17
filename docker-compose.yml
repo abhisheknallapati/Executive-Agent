@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  executive-agent:
+    build: .
+    container_name: aionos-executive-agent
+    ports:
+      - "8000:8000"
+    environment:
+      - SIMULATED_DATE=2026-09-23
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
